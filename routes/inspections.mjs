@@ -1,5 +1,5 @@
 import express from 'express';
-import db from "../db/conn.mjs";
+import db from "../connectdb/conn.mjs";
 import { ObjectId } from "mongodb";
 
 
@@ -7,11 +7,11 @@ const router = express.Router();
 
 
 
-//Create a single inspections info using POST
+//Create a route to populate my 20 sample inspections collections info using ReqBin
 router.post("/", async (req, res) => {
     let collection = await db.collection("inspections");
     let newDocument = req.body;
-    let result = await collection.insertOne(newDocument);
+    let result = await collection.insertMany(newDocument);
     res.send(result).status(204);
 });
 
