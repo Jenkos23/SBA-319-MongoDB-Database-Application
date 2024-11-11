@@ -62,7 +62,7 @@ The application is organized into the following directories and files:
    - **`DELETE /posts/:id`**: Deletes a post by its ID.
 
 ### .env Configuration
-- The `.env` file contains the MongoDB connection string and other sensitive information needed to establish a connection to the database. It has been committed to the project for development purposes, but make sure to replace it with your own credentials in a production environment.
+The .env file contains the MongoDB connection string which is a sensitive information needed to establish a connection to the database. It has been committed to the project for development purposes, but  the password was not uploaded so make sure to replace it with your own credentials.
 
 ### `index.mjs`
 - This is the main entry point where the routes are imported and utilized. It also handles the initial setup of the indexing structure for performance optimization via the `indexSetup` function.
