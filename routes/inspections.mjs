@@ -28,11 +28,49 @@ router.get("/allCert", async (req, res) =>{
 });
 
 
+// Get ID and the business name from inspections
+router.get("/allCertId", async (req, res) => {
+    let collection = await db.collection("inspections");
+    let result = await collection.find({ business_name: { $ne: "" }}, { projection: { business_name: 1 } })
+    .sort({business_name: 1})
+    .skip(20)
+    .limit(50).toArray();
+
+    if (!result || result.length === 0) {
+        return res.status(404).send("Inspection details not found");
+    } else {
+       
+        return res.status(200).send(result);
+    }
+});
+
+
+// Get just business names from inspections
+router.get("/allCertBus", async (req, res) => {
+    let collection = await db.collection("inspections");
+    let result = await collection.find({ business_name: { $ne: "" }}, { projection: { business_name: 1 } })
+    .sort({business_name: 1})
+    .skip(20)
+    .limit(150).toArray();
+
+    if (!result || result.length === 0) {
+        return res.status(404).send("Inspection details not found");
+    } else {
+        // Map through the result to return only the business names
+        let businessNames = result.map(doc => doc.business_name);
+        return res.status(200).send(businessNames);
+    }
+});
+
+
+
 //Get a single inspections info details
 router.get("/:id", async (req, res) =>{
     let collection = await db.collection("inspections");
     let query = {_id: new ObjectId(req.params.id)};
-    let result = await collection.findOne(query);
+    let result = await collection.findOne(query, {
+        projection: { business_name: 1 }
+    });
 
     if(!result) res.send("inspections details not found").status(404);
     else res.send(result).status(200)
@@ -78,7 +116,7 @@ router.delete("/:id", async (req, res) => {
     }
     return res.status(200).send(result);
 });
-;
+
 
 // //Update a certificate number
 router.patch("/certificate/:id", async (req, res) => {
@@ -107,7 +145,6 @@ router.delete("/certificate/:id", async (req, res) => {
     }
     return res.status(200).send(result);
 });
-
 
 
 
