@@ -1,13 +1,22 @@
 import express from "express";
-import db from "../db/conn.mjs";
+import db from "../connectdb/conn.mjs";
 import { ObjectId } from "mongodb";
 
 
 const router = express.Router();
 
 
+//Get all grade entry
+router.get("/gradeData", async (req,res) => {
+  let collection = await db.collection("grades");
+  let result = await collection.find().skip(10).limit(20).toArray();
+  
+  if(!result) res.send("grades not found").status(404);
+  else res.send(result).status(200);
+  
+});
 
-// Create a single grade entry
+//Create a route to populate my 20 sample grade collections info using ReqBin
 router.post("/", async (req, res) => {
   let collection = await db.collection("grades");
   let newDocument = req.body;
@@ -18,7 +27,7 @@ router.post("/", async (req, res) => {
     delete newDocument.student_id;
   }
 
-  let result = await collection.insertOne(newDocument);
+  let result = await collection.insertMany(newDocument);
   res.send(result).status(204);
 });
 
@@ -34,6 +43,8 @@ router.get("/:id", async (req, res) => {
   if (!result) res.send("Not found").status(404);
   else res.send(result).status(200);
 });
+
+
 
 // Add a score to a grade entry
 router.patch("/:id/add", async (req, res) => {
